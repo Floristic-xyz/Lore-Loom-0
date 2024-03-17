@@ -20,8 +20,18 @@ async function listAttestations() {
             }
         }
     });
+     // Extract the array of attestations from the response data
+     const attestations = response.data.data.attestations;
 
-        console.log(JSON.stringify(response.data));
+     // Count the number of ids
+     const idCount = attestations.length;
+
+     // Log the attestations array and the count of ids
+     console.log("Attestations:", attestations);
+     console.log("Number of ids:", idCount);
+
+
+       // console.log(JSON.stringify(response.data));
     } catch (error) {
         console.error('Error fetching attestations:', error);
     }
