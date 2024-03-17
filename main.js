@@ -16,7 +16,9 @@ async function getInput() {
         });
     });
 }
-
+/*
+below you will find the switch that calls all the other functions. 
+*/
 async function main() {
     let exitLoop = false;
     while (!exitLoop) {
