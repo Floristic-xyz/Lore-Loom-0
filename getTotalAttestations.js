@@ -1,5 +1,9 @@
 import { SchemaRegistry, EAS } from "@ethereum-attestation-service/eas-sdk";
 import { ethers } from "ethers";
+const fs = require('fs').promises;
+
+const dfd = require("danfojs-node") ;
+
 
 async function getTotalAttestations() {
     // Initialize EAS contract and provider
@@ -18,7 +22,38 @@ async function getTotalAttestations() {
 
     const attestations = await eas();
     console.log(attestations);
-    return attestations;
+
+
+    ///
+    const df = new dfd.DataFrame(attestations);
+    const sumidColumn = df.loc({ columns: ["id"] }).sum().values[0];
+
+    
+
+    // Print the DataFrame
+    console.log("DataFrame:");
+    console.log(df.toString());
+    console.log("Sum of second column:", sumidColumn);
+
+    let imageFileName;
+        if (sumidColumn < 2) {
+            imageFileName = 'nft-1.png';
+        } else {
+            imageFileName = 'nft-2.png';
+        }
+
+
+        // Read the JPEG image file from the project directory
+        const imageData = await fs.readFile(imageFileName);
+
+        // Return the image data
+        return imageData;
+
+
+
+
+    //
+ //   return   sumidColumn   // attestations;
 
     /*
     try {
@@ -48,4 +83,7 @@ getTotalAttestations().then(total => {
     */
 
 let attestations = await getTotalAttestations();
+
 console.log(attestations);
+
+
