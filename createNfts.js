@@ -32,17 +32,4 @@ async function processNFTDataFromFile(filePath) {
     }
 }
 
-// Usage example:
-const filePath = './offChain/basedNounsDao.json';
-processNFTDataFromFile(filePath)
-    .then(fileName => {
-        if (fileName) {
-            console.log('NFT image file name:', fileName);
-            // Further processing or actions with the file name
-        } else {
-            console.log('Failed to process NFT data.');
-        }
-    })
-    .catch(error => {
-        console.error('Error in main program:', error);
-    });
+    export default processNFTDataFromFile;

@@ -1,47 +1,67 @@
-import getSortedVotesData from './functions/apecoinProposalVotes.js';
-import listAttestations from './functions/basedNouns.js';
+import readline from 'readline';
 import fs from 'fs';
+import listAttestations from './functions/basedNouns.js';
+import processNFTDataFromFile from './createNfts.js'
+import getSortedVotesData from './functions/apecoinProposalVotes.js'
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+async function getInput() {
+    return new Promise((resolve, reject) => {
+        rl.question('1 to pull , 2 to process, 3 to create nft and 4 is bed time): ', (answer) => {
+            resolve(answer);
+        });
+    });
+}
 
 async function main() {
-    console.log("Starting main program...");
-  
-    // Call the function to get sorted votes data
-    const sortedVotesData = await getSortedVotesData();
-  
-    // Output the sorted votes data
-    //console.log("Sorted Votes by Choice:", sortedVotesData);
-
-    fs.writeFile('./offChain/sortedVotesData.json', JSON.stringify(sortedVotesData, null, 2), (err) => {
-        if (err) {
-          console.error('Error writing to file:', err);
-        } else {
-          console.log('Data written to file: sortedVotesData.json');
+    let exitLoop = false;
+    while (!exitLoop) {
+        const option = await getInput();
+        switch (option.toLowerCase()) {
+            case '1':
+            const sortedVotesData = await getSortedVotesData();
+            fs.writeFile('./offChain/sortedVotesData.json', JSON.stringify(sortedVotesData, null, 2), (err) => {
+                if (err) {
+                    console.error('Error writing to file:\n', err);
+                } else {
+                    console.log('Data written to file: sortedVotesData.json');
+                }
+            });
+                break;
+            case '2':
+                const basedNouns = await listAttestations();
+                fs.writeFile('./offChain/basedNounsDao.json', JSON.stringify(basedNouns, null, 2), (err) => {
+                    if (err) {
+                        console.error('Error writing attestationList to file:', err);
+                    } else {
+                        console.log('Nouns attestations written to file: basedNounsDao.json');
+                    }
+                });
+                break;
+            case '3':
+                console.log('Option 3 selected');
+                const filePath = './offChain/basedNounsDao.json';
+                const fileName = await processNFTDataFromFile(filePath);
+                if (fileName) {
+                    console.log('NFT image file name:', fileName);
+                    // Further processing or actions with the file name
+                } else {
+                    console.log('Failed to process NFT data.');
+                }
+                break;
+            case '4':
+                console.log('Exiting...');
+                exitLoop = true;
+                break;
+            default:
+                console.log('Invalid option. Please try again.');
         }
-      });
-
-    // Call the function to list attestations
-    const basedNouns = await listAttestations();
-  
-    // Output the attestation list
-    //console.log("Nouns attestations:", basedNouns);
-
-    fs.writeFile('./offChain/basedNounsDao.json', JSON.stringify(basedNouns, null, 2), (err) => {
-        if (err) {
-            console.error('Error writing attestationList to file:', err);
-          } else {
-            console.log('Nouns attestations written to file: basedNounsDao.json');
-          }
-        });
-
-        /*if (err) {
-          console.error('Error writing to file:', err);
-        } else {
-          console.log('Data written to file: basedNounsDao.json');
-        }
-      });
-      */
-  
-    console.log("Main program completed.");
+    }
+    rl.close();
 }
 
 main().catch(error => {
